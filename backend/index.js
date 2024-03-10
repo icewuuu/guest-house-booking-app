@@ -4,21 +4,15 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const saltRounds = generateUniqueSalt();
+const saltRounds = 10;
 const mongoose = require("mongoose");
-const UserModel = require("./models/User");
 const User = require("./models/User");
-const crypto = require("crypto");
 
 app.use(express.json());
 
 app.use(cors());
 
 mongoose.connect("mongodb://127.0.0.1:27017/booking-guesthouse-app");
-
-function generateUniqueSalt() {
-  return crypto.randomBytes(16).toString("hex");
-}
 
 app.get("/", (req, res) => {
   res.send("Hello from our server!");

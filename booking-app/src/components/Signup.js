@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Signup.css";
 import axios from "axios";
+import SnackbarMessage from "./SnackbarMessage";
 
 function SignUp() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [registered, setRegistered] = useState();
+  const navigate = useNavigate();
 
   const handleSignUp = (event) => {
     event.preventDefault();
@@ -18,28 +21,14 @@ function SignUp() {
         password: password,
       })
       .then((response) => {
-        console.log(response.data);
-        // Handle response here
+        setRegistered("Registered successfully");
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
       })
       .catch((error) => {
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-          setErrorMessage(error.response.data.message);
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.log(error.request);
-          setErrorMessage("No response from server");
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log("Error", error.message);
-          setErrorMessage("An error occurred");
-        }
+        setErrorMessage(error.message);
       });
-    // Handle SignUp logic here
   };
 
   return (
@@ -70,6 +59,12 @@ function SignUp() {
       <p>
         You already have an account? <Link to="/login">Login</Link>
       </p>
+      {registered && (
+        <SnackbarMessage
+          message="Registered successfully"
+          severity="success" // 'error', 'warning', 'info', 'success'
+        />
+      )}
     </div>
   );
 }
