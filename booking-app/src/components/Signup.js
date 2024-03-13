@@ -21,13 +21,23 @@ function SignUp() {
         password: password,
       })
       .then((response) => {
-        setRegistered("Registered successfully");
+        setRegistered("Registered successfully! Redirecting to login page...");
         setTimeout(() => {
           navigate("/login");
         }, 3000);
       })
       .catch((error) => {
-        setErrorMessage(error.message);
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          setErrorMessage(error.response.data.message);
+        } else if (error.request) {
+          // The request was made but no response was received
+          setErrorMessage("No response from server");
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          setErrorMessage("An error occurred");
+        }
       });
   };
 
@@ -53,7 +63,7 @@ function SignUp() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {errorMessage && <p>{errorMessage}</p>}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button type="submit">Sign Up</button>
       </form>
       <p>
